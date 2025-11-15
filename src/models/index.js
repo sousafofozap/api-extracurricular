@@ -2,9 +2,9 @@ const sequelize = require("../db");
 const Usuario = require("./Usuario");
 const Atividade = require("./Atividade");
 const Inscricao = require("./Inscricao");
-const AtividadeResponsavel = require("./AtividadeResponsavel");
+const AtividadeResponsavel = require("./atividadeResponsavel");
 const Categoria = require("./Categoria");
-const AtividadeCategoria = require("./AtividadeCategoria");
+const AtividadeCategoria = require("./atividadeCategoria");
 
 Usuario.hasMany(Atividade, {
   foreignKey: "criador_id",
