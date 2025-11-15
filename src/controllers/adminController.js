@@ -86,7 +86,7 @@ exports.getTopAtividades = async (req, res) => {
     const topAtividades = await Atividade.findAll({
       attributes: {
         include: [
-          [sequelize.fn('COUNT', sequelize.col('inscricoes.id')), 'totalInscricoes']
+          [sequelize.fn('COUNT', sequelize.col('inscricoes.id')), 'total_inscricoes']
         ]
       },
       include: {
@@ -94,8 +94,8 @@ exports.getTopAtividades = async (req, res) => {
         as: 'inscricoes',
         attributes: [] 
       },
-      group: ['Atividade.id'], 
-      order: [[sequelize.literal('totalInscricoes'), 'DESC']], 
+      group: ['Atividade.id'],
+      order: [[sequelize.literal('total_inscricoes'), 'DESC']], 
       limit: 5,
       subQuery: false
     });
