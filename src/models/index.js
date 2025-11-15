@@ -4,7 +4,7 @@ const Atividade = require("./Atividade");
 const Inscricao = require("./Inscricao");
 const AtividadeResponsavel = require("./atividadeResponsavel");
 const Categoria = require("./Categoria");
-const AtividadeCategoria = require("./atividadeCategoria");
+const AtividadeCategoria = require("./AtividadeCategoria");
 
 Usuario.hasMany(Atividade, {
   foreignKey: "criador_id",
