@@ -1,4 +1,5 @@
-const { Usuario, Atividade } = require("../models/index");
+const { Usuario, Atividade, Inscricao } = require('../models/index');
+const { sequelize } = require('../models/index');
 
 exports.listarUsuarios = async (req, res) => {
   try {
@@ -52,5 +53,71 @@ exports.deletarQualquerAtividade = async (req, res) => {
     res
       .status(500)
       .json({ message: "Erro ao apagar atividade", error: error.message });
+  }
+};
+exports.getStats = async (req, res) => {
+  try {
+    const totalUsuarios = await Usuario.count();
+
+    const totalAtividades = await Atividade.count();
+
+    const totalInscricoes = await Inscricao.count();
+
+    const totalHorasCreditadas = await Usuario.sum('horas_acumuladas', {
+      where: {
+        role: 'ALUNO' 
+      }
+    });
+
+    res.json({
+      totalUsuarios,
+      totalAtividades,
+      totalInscricoes,
+      totalHorasCreditadas: totalHorasCreditadas || 0 
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar estatísticas', error: error.message });
+  }
+};
+
+exports.getTopAtividades = async (req, res) => {
+  try {
+    const topAtividades = await Atividade.findAll({
+      attributes: {
+        include: [
+          [sequelize.fn('COUNT', sequelize.col('inscricoes.id')), 'totalInscricoes']
+        ]
+      },
+      include: {
+        model: Inscricao,
+        as: 'inscricoes',
+        attributes: [] 
+      },
+      group: ['Atividade.id'], 
+      order: [[sequelize.literal('totalInscricoes'), 'DESC']], 
+      limit: 5,
+      subQuery: false
+    });
+
+    res.json(topAtividades);
+
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar top atividades', error: error.message });
+  }
+};
+exports.getTopAlunos = async (req, res) => {
+  try {
+    const topAlunos = await Usuario.findAll({
+      where: { role: 'ALUNO' }, 
+      order: [['horas_acumuladas', 'DESC']], 
+      limit: 5,
+      attributes: ['id', 'nome', 'email', 'horas_acumuladas']
+    });
+
+    res.json(topAlunos);
+
+  } catch (error) { 
+    res.status(500).json({ message: 'Erro ao buscar top alunos', error: error.message });
   }
 };

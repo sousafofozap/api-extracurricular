@@ -15,7 +15,7 @@ const Atividade = sequelize.define("Atividade", {
     type: DataTypes.TEXT,
   },
   horario_inicio: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATE,    //ex: 2025-11-15T12:41:00Z
     allowNull: false,
   },
   duracao_horas: {
